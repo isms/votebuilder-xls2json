@@ -8,7 +8,7 @@ Not all Votebuilder exports are set up the same way. This file works for exporte
 
 ```html
 <div>
-  <table class="ResultsGridViewControlStyle" [...] >
+  <table class="ResultsGridViewControlStyle">
     <tr class="ResultsHeaderStyle">
       <th scope="col"> [...] </th>
       [...]
