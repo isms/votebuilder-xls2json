@@ -43,7 +43,7 @@ def insert_week(d_in):
     return d_in
 
 def manual_tweak(d_in):
-    """ Any one-off tweaks that don't make anywhere else """
+    """ Any one-off tweaks that don't make sense anywhere else """
     # one event displaying wrong
     if d_in['ID'] == '42645':
         d_in['Time'] = '12:30 PM - 4:00 PM'
