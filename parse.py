@@ -6,6 +6,8 @@ import sys
 import simplejson
 from lxml.html import fromstring
 
+from transforms import apply_transforms
+
 TR_CLASS_NAMES = ['ResultsHeaderStyle', 'ResultsRowStyle',
     'ResultsAlternateRowStyle']
 
@@ -26,7 +28,8 @@ def get_dicts_from_lists(headers, contents):
         as keys for all dicts and the values in each row as values in each
         corresponding dictionary """
     size = range(len(headers))
-    return [dict((headers[i], row[i]) for i in size) for row in contents]
+    dicts = [dict((headers[i], row[i]) for i in size) for row in contents]
+    return apply_transforms(dicts)
 
 def get_dicts_from_html(html):
     """ Higher level function to go straight from HTML to list of row
@@ -34,9 +37,11 @@ def get_dicts_from_html(html):
     headers, contents = get_lists_from_html(html)
     return get_dicts_from_lists(headers, contents)
 
-def get_json_from_dicts(dicts):
+def get_json_from_dicts(dicts, pretty_print=False):
     """ Given list of row dictionaries, return pretty printed JSON """
-    return simplejson.dumps(dicts, sort_keys=True, indent=4)
+    if pretty_print:
+        return simplejson.dumps(dicts, indent=4, sort_keys=True)
+    return simplejson.dumps(dicts, sort_keys=True)
 
 def get_json_from_html(html):
     """ Higher level function to go straight from HTML to JSON by combining
@@ -55,7 +60,7 @@ def main(filename):
     print(json)
 
 if (__name__ == '__main__'):
-    if not len(sys.argv) == 2:
+    if not len(sys.argv) >= 2:
         print('Usage: python parse.py <filename>')
         sys.exit(1)
     main(sys.argv[1])
