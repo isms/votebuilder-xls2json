@@ -9,7 +9,8 @@ from lxml.html import fromstring
 from transforms import apply_transforms
 
 TR_CLASS_NAMES = ['ResultsHeaderStyle', 'ResultsRowStyle',
-    'ResultsAlternateRowStyle']
+                  'ResultsAlternateRowStyle']
+
 
 def get_lists_from_html(html):
     """ Parse the file to find the headers and all content rows of the
@@ -19,9 +20,10 @@ def get_lists_from_html(html):
     trs = []
     for class_name in TR_CLASS_NAMES:
         trs += doc.find_class(class_name)
-    # extract the contents of all of the td (or th, for headers) children
+        # extract the contents of all of the td (or th, for headers) children
     rows = [[td.text_content() for td in tr.getchildren()] for tr in trs]
     return (rows[0], rows[1:]) # (headers, all other rows)
+
 
 def get_dicts_from_lists(headers, contents):
     """ Take all rows as lists turn them into dictionaries with the headers
@@ -31,11 +33,13 @@ def get_dicts_from_lists(headers, contents):
     dicts = [dict((headers[i], row[i]) for i in size) for row in contents]
     return apply_transforms(dicts)
 
+
 def get_dicts_from_html(html):
     """ Higher level function to go straight from HTML to list of row
         dictionaries by combining other functions """
     headers, contents = get_lists_from_html(html)
     return get_dicts_from_lists(headers, contents)
+
 
 def get_json_from_dicts(dicts, pretty_print=False):
     """ Given list of row dictionaries, return pretty printed JSON """
@@ -43,21 +47,25 @@ def get_json_from_dicts(dicts, pretty_print=False):
         return simplejson.dumps(dicts, indent=4, sort_keys=True)
     return simplejson.dumps(dicts, sort_keys=True)
 
+
 def get_json_from_html(html):
     """ Higher level function to go straight from HTML to JSON by combining
         other functions """
     dicts = get_dicts_from_html(html)
     return get_json_from_dicts(dicts)
 
+
 def read_html_from_file(filename):
     """ Opens the file and returns the contents """
     return open(filename, 'r').read()
+
 
 def main(filename):
     """ Open the desired file, parse html, and output json """
     html = read_html_from_file(filename)
     json = get_json_from_html(html)
     print(json)
+
 
 if (__name__ == '__main__'):
     if not len(sys.argv) >= 2:
